@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Newsletter;
 use Illuminate\Http\Request;
 
 class NewsletterController extends Controller
@@ -13,7 +14,7 @@ class NewsletterController extends Controller
      */
     public function index()
     {
-        //
+        return Newsletter::all();
     }
 
     /**
@@ -24,7 +25,7 @@ class NewsletterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return Newsletter::create($request->all());
     }
 
     /**
@@ -35,7 +36,7 @@ class NewsletterController extends Controller
      */
     public function show($id)
     {
-        //
+        return Newsletter::findOrFail($id);
     }
 
     /**
@@ -47,7 +48,11 @@ class NewsletterController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $newsletter = Newsletter::findOrFail($id);
+
+        $newsletter->update($request->all());
+
+        return $newsletter;
     }
 
     /**
@@ -58,6 +63,6 @@ class NewsletterController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return Newsletter::destroy($id);
     }
 }
