@@ -14,7 +14,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::all();
+        return response()->json(User::all(), 200);
     }
 
     /**
@@ -25,7 +25,9 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        return User::create($request->all());
+        $user = User::create($request->all());
+
+        return response()->json($user, 201);
     }
 
     /**
@@ -39,13 +41,15 @@ class UserController extends Controller
         $user = User::find($id);
 
         if(is_null($user)){
-            return [
+
+            return response()->json([
                 'status' => 'Error',
                 'message' => 'O recurso pesquisado não existe'
-            ];
+            ], 404);
+
         }
 
-        return $user;
+        return response()->json($user, 200);
     }
 
     /**
@@ -60,15 +64,17 @@ class UserController extends Controller
         $user = User::find($id);
 
         if(is_null($user)){
-            return [
+
+            return response()->json([
                 'status' => 'Error',
                 'message' => 'Não foi possível realizar a atualização. O recurso solicitado não existe'
-            ];
+            ], 404);
+
         }
 
         $user->update($request->all());
 
-        return $user;
+        return response()->json($user, 200);
     }
 
     /**
@@ -83,17 +89,19 @@ class UserController extends Controller
         $user = User::find($id);
 
         if(is_null($user)){
-            return [
+
+            return response()->json([
                 'status' => 'Error',
                 'message' => 'Não foi possível realizar a exclusão. O recurso solicitado não existe'
-            ];
+            ], 404);
+
         }
 
         User::destroy($id);
 
-        return [
+        return response()->json([
             'status' => 'Success',
             'message' => 'O resurso foi excluído com sucesso'
-        ];
+        ], 200);
     }
 }

@@ -14,7 +14,7 @@ class NewsletterController extends Controller
      */
     public function index()
     {
-        return Newsletter::all();
+        return response()->json(Newsletter::all(), 200);
     }
 
     /**
@@ -25,7 +25,9 @@ class NewsletterController extends Controller
      */
     public function store(Request $request)
     {
-        return Newsletter::create($request->all());
+        $newsletter = Newsletter::create($request->all());
+
+        return response()->json($newsletter, 201);
     }
 
     /**
@@ -39,13 +41,15 @@ class NewsletterController extends Controller
         $newsletter = Newsletter::find($id);
 
         if(is_null($newsletter)){
-            return [
+
+            return response()->json([
                 'status' => 'Error',
                 'message' => 'A notícia pesquisado não existe'
-            ];
+            ], 404);
+
         }
 
-        return $newsletter;
+        return response()->json($newsletter, 200);
     }
 
     /**
@@ -60,15 +64,17 @@ class NewsletterController extends Controller
         $newsletter = Newsletter::find($id);
 
         if(is_null($newsletter)){
-            return [
+
+            return response()->json([
                 'status' => 'Error',
                 'message' => 'Não foi possível atualizar as informações da notícia. A notícia não existe'
-            ];
+            ], 404);
+
         }
 
         $newsletter->update($request->all());
 
-        return $newsletter;
+        return response()->json($newsletter, 200);
     }
 
     /**
@@ -83,17 +89,19 @@ class NewsletterController extends Controller
         $newsletter = Newsletter::find($id);
 
         if(is_null($newsletter)){
-            return [
+
+            return response()->json([
                 'status' => 'Error',
                 'message' => 'Não foi possível realizar a exclusão. A notícia solicitado não existe'
-            ];
+            ], 404);
+
         }
 
         Newsletter::destroy($id);
 
-        return [
+        return response()->json([
             'status' => 'Success',
             'message' => 'A notícia foi excluído com sucesso'
-        ];
+        ], 200);
     }
 }
