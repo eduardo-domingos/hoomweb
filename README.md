@@ -8,8 +8,8 @@
 </p>
 
 ## Vesões das tecnologias
-PHP   8.1.x
-MySQL 8.0.31
+- PHP   8.1.x
+- MySQL 8.0.31
 
 ## Comando para criação do DB
 ~~~~
