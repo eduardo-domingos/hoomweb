@@ -36,7 +36,16 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return User::find($id);
+        $id = User::find($id);
+
+        if(is_null($id)){
+            return [
+                'status' => 'Success',
+                'message' => 'O recurso pesquisado não existe'
+            ];
+        }
+
+        return $id;
     }
 
     /**
@@ -49,6 +58,13 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::find($id);
+
+        if(is_null($user)){
+            return [
+                'status' => 'Error',
+                'message' => 'Não foi possível realizar a atualização. O recurso solicitado não existe'
+            ];
+        }
 
         $user->update($request->all());
 
@@ -63,6 +79,21 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        return User::destroy($id);
+
+        $user = User::find($id);
+
+        if(is_null($user)){
+            return [
+                'status' => 'Error',
+                'message' => 'Não foi possível realizar a exclusão. O recurso solicitado não existe'
+            ];
+        }
+
+        User::destroy($id);
+
+        return [
+            'status' => 'Success',
+            'message' => 'O resurso foi excluído com sucesso'
+        ];
     }
 }
