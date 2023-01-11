@@ -36,16 +36,16 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $id = User::find($id);
+        $user = User::find($id);
 
-        if(is_null($id)){
+        if(is_null($user)){
             return [
                 'status' => 'Success',
                 'message' => 'O recurso pesquisado não existe'
             ];
         }
 
-        return $id;
+        return $user;
     }
 
     /**
