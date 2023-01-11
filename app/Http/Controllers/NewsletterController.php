@@ -36,7 +36,16 @@ class NewsletterController extends Controller
      */
     public function show($id)
     {
-        return Newsletter::findOrFail($id);
+        $newsletter = Newsletter::find($id);
+
+        if(is_null($newsletter)){
+            return [
+                'status' => 'Error',
+                'message' => 'A notícia pesquisado não existe'
+            ];
+        }
+
+        return $newsletter;
     }
 
     /**
@@ -48,7 +57,14 @@ class NewsletterController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $newsletter = Newsletter::findOrFail($id);
+        $newsletter = Newsletter::find($id);
+
+        if(is_null($newsletter)){
+            return [
+                'status' => 'Error',
+                'message' => 'Não foi possível atualizar as informações da notícia. A notícia não existe'
+            ];
+        }
 
         $newsletter->update($request->all());
 
@@ -63,6 +79,21 @@ class NewsletterController extends Controller
      */
     public function destroy($id)
     {
-        return Newsletter::destroy($id);
+
+        $newsletter = Newsletter::find($id);
+
+        if(is_null($newsletter)){
+            return [
+                'status' => 'Error',
+                'message' => 'Não foi possível realizar a exclusão. A notícia solicitado não existe'
+            ];
+        }
+
+        Newsletter::destroy($id);
+
+        return [
+            'status' => 'Success',
+            'message' => 'A notícia foi excluído com sucesso'
+        ];
     }
 }
