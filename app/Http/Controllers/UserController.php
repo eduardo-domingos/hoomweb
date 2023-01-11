@@ -40,7 +40,7 @@ class UserController extends Controller
 
         if(is_null($user)){
             return [
-                'status' => 'Success',
+                'status' => 'Error',
                 'message' => 'O recurso pesquisado não existe'
             ];
         }
