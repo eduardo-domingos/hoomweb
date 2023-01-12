@@ -7,6 +7,17 @@ use Illuminate\Http\Request;
 
 class NewsletterController extends Controller
 {
+
+    /**
+     * Instância da classe Newsletter
+     */
+    private Newsletter $newsletter;
+
+    public function __construct(Newsletter $newsletter)
+    {
+        $this->newsletter = $newsletter;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +25,9 @@ class NewsletterController extends Controller
      */
     public function index()
     {
-        return response()->json(Newsletter::all(), 200);
+        $newsletter = $this->newsletter->all();
+
+        return response()->json($newsletter, 200);
     }
 
     /**
@@ -25,7 +38,10 @@ class NewsletterController extends Controller
      */
     public function store(Request $request)
     {
-        $newsletter = Newsletter::create($request->all());
+
+        $request->validate($this->newsletter->rules(), $this->newsletter->feedback());
+
+        $newsletter = $this->newsletter->create($request->all());
 
         return response()->json($newsletter, 201);
     }
@@ -38,7 +54,7 @@ class NewsletterController extends Controller
      */
     public function show($id)
     {
-        $newsletter = Newsletter::find($id);
+        $newsletter = $this->newsletter->find($id);
 
         if(is_null($newsletter)){
 
@@ -61,7 +77,7 @@ class NewsletterController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $newsletter = Newsletter::find($id);
+        $newsletter = $this->newsletter->find($id);
 
         if(is_null($newsletter)){
 
@@ -70,6 +86,21 @@ class NewsletterController extends Controller
                 'message' => 'Não foi possível atualizar as informações da notícia. A notícia não existe'
             ], 404);
 
+        }
+
+        if($request->method() === 'PATCH'){
+
+            $rulesDynamics = [];
+
+            foreach($newsletter->rules() as $input => $rule){
+                if(array_key_exists($input, $request->all())){
+                    $rulesDynamics[$input] = $rule;
+                }
+            }
+
+            $request->validate($rulesDynamics, $newsletter->feedback());   
+        }else{
+            $request->validate($newsletter->rules(), $newsletter->feedback());   
         }
 
         $newsletter->update($request->all());
@@ -86,7 +117,7 @@ class NewsletterController extends Controller
     public function destroy($id)
     {
 
-        $newsletter = Newsletter::find($id);
+        $newsletter = $this->newsletter->find($id);
 
         if(is_null($newsletter)){
 
@@ -97,7 +128,7 @@ class NewsletterController extends Controller
 
         }
 
-        Newsletter::destroy($id);
+        $this->newsletter->destroy($id);
 
         return response()->json([
             'status' => 'Success',
