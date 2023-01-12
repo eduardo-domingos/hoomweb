@@ -41,4 +41,34 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Regras de validação
+     * @return array
+     */
+    public function rules(): array
+    {
+        return [
+            'name' => 'required|min:3',
+            'email' => 'required|unique:users',
+            'password' => 'required|min:8'
+        ];
+
+    }
+
+    /**
+     * Mensagens das regras de validação
+     * @return array
+     */
+    public function feedback(): array
+    {
+
+        return [
+            'required' => 'O campo :attribute é obrigatório',
+            'name.min' => 'O nome de usuário deve ter no mínimo 3 caracteres',
+            'password.min' => 'A senha deve ter no mínimo 8 caractres',
+            'email.unique' => 'Esse e-mail já está sendo utilizado por outro usuário'
+        ];
+
+    }
 }

@@ -7,6 +7,18 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+
+    /**
+     * Instância da classe User
+     * @var User
+     */
+    private User $user;
+
+    public function __construct(User $user)
+    {
+        $this->user = $user;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +26,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        return response()->json(User::all(), 200);
+
+        $user = $this->user->all();
+
+        return response()->json($user, 200);
     }
 
     /**
@@ -25,7 +40,10 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $user = User::create($request->all());
+        
+        $request->validate($this->user->rules(), $this->user->feedback());
+
+        $user = $this->user->create($request->all());
 
         return response()->json($user, 201);
     }
@@ -38,7 +56,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::find($id);
+        $user = $this->user->find($id);
 
         if(is_null($user)){
 
@@ -61,7 +79,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user = User::find($id);
+        $user = $this->user->find($id);
 
         if(is_null($user)){
 
@@ -86,7 +104,7 @@ class UserController extends Controller
     public function destroy($id)
     {
 
-        $user = User::find($id);
+        $user = $this->user->find($id);
 
         if(is_null($user)){
 
@@ -97,7 +115,7 @@ class UserController extends Controller
 
         }
 
-        User::destroy($id);
+        $this->user->destroy($id);
 
         return response()->json([
             'status' => 'Success',
