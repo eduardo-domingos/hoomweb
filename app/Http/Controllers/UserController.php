@@ -90,6 +90,21 @@ class UserController extends Controller
 
         }
 
+        if($request->method() === 'PATCH'){
+
+            $rulesDynamics = [];
+
+            foreach($user->rules() as $input => $rule){
+                if(array_key_exists($input, $request->all())){
+                    $rulesDynamics[$input] = $rule;
+                }
+            }
+
+            $request->validate($rulesDynamics, $user->feedback());   
+        }else{
+            $request->validate($user->rules(), $user->feedback());   
+        }
+
         $user->update($request->all());
 
         return response()->json($user, 200);
