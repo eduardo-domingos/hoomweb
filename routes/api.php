@@ -22,6 +22,8 @@ Route::post('/user', [App\Http\Controllers\UserController::class, 'store']);
 
 Route::put('/user/{id}', [App\Http\Controllers\UserController::class, 'update']);
 
+Route::patch('/user/{id}', [App\Http\Controllers\UserController::class, 'update']);
+
 Route::delete('/user/{id}', [App\Http\Controllers\UserController::class, 'destroy']);
 
 
