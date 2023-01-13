@@ -54,7 +54,7 @@ class NewsletterController extends Controller
      */
     public function show($id)
     {
-        $newsletter = $this->newsletter->find($id);
+        $newsletter = $this->newsletter->with('user')->find($id);
 
         if(is_null($newsletter)){
 

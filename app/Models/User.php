@@ -71,4 +71,13 @@ class User extends Authenticatable
         ];
 
     }
+
+    /**
+     * Relacionamento entre tabelas
+     * Um usuário pode possuír notícias
+     */
+    public function newsletter()
+    {
+        return $this->hasMany('App\Models\Newsletter', 'id_user');
+    }
 }

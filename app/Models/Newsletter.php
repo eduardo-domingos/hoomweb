@@ -44,4 +44,13 @@ class Newsletter extends Model
 
     }
 
+    /**
+     * Adiciona relacionamento
+     * Notícia depende do usuário para existir
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'id');
+    }
+
 }
