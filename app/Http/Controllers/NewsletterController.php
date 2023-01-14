@@ -103,7 +103,9 @@ class NewsletterController extends Controller
             $request->validate($newsletter->rules(), $newsletter->feedback());   
         }
 
-        $newsletter->update($request->all());
+        $newsletter->fill($request->all());
+
+        $newsletter->save();
 
         return response()->json($newsletter, 200);
     }

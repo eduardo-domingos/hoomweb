@@ -24,12 +24,26 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
 
-        $user = $this->user->all();
+        $users = [];
 
-        return response()->json($user, 200);
+        if($request->has('attributes_newsletter')){
+            $attributes_newsletter = $request->query('attributes_newsletter');
+            $users = $this->user->with('newsletter:id_user,'.$attributes_newsletter);
+        }else{
+            $users = $this->user->with('newsletter');
+        }
+
+        if($request->has('attributes')){
+            $attributes = $request->query('attributes');
+            $users = $users->selectRaw($attributes)->get();
+        }else{
+            $users = $users->get();
+        }
+
+        return response()->json($users, 200);
     }
 
     /**
@@ -105,7 +119,9 @@ class UserController extends Controller
             $request->validate($user->rules(), $user->feedback());   
         }
 
-        $user->update($request->all());
+        $user->fill($request->all());
+
+        $user->save();
 
         return response()->json($user, 200);
     }
