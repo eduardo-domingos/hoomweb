@@ -36,6 +36,11 @@ class UserController extends Controller
             $users = $this->user->with('newsletter');
         }
 
+        if($request->has('filter')){
+            $conditions = explode(':', $request->query('filter'));
+            $users = $users->where($conditions[0], $conditions[1], $conditions[2]);
+        }
+
         if($request->has('attributes')){
             $attributes = $request->query('attributes');
             $users = $users->selectRaw($attributes)->get();
