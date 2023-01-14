@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Newsletter;
 use Illuminate\Http\Request;
+use App\Repositories\NewsletterRepository;
 
 class NewsletterController extends Controller
 {
@@ -25,33 +26,24 @@ class NewsletterController extends Controller
      */
     public function index(Request $request)
     {
-        $newsletter = [];
+        $newsletterRepositry = new newsletterRepository(($this->newsletter));
 
         if($request->has('attributes_user')){
-            $attributes_newsletter = $request->query('attributes_user');
-            $newsletter = $this->newsletter->with('user:id,'.$attributes_newsletter);
+            $attributes_user = 'user:id,'.$request->query('attributes_user');
+            $newsletterRepositry->selectAttributesRelatedRecords($attributes_user);
         }else{
-            $newsletter = $this->newsletter->with('user');
+            $newsletterRepositry->selectAttributesRelatedRecords('newsletter');
         }
 
         if($request->has('filter')){
-            $filters = explode(';', $request->query('filter'));
-
-            foreach($filters as $key => $conditions){
-                $condition = explode(':', $conditions);                
-                $newsletter = $newsletter->where($condition[0], $condition[1], $condition[2]);
-            }
-
+            $newsletterRepositry->filter($request->query('filter'));
         }
 
         if($request->has('attributes')){
-            $attributes = $request->query('attributes');
-            $newsletter = $newsletter->selectRaw($attributes)->get();
-        }else{
-            $newsletter = $newsletter->get();
+            $newsletterRepositry->selectAttributes($request->query('attributes'));
         }
 
-        return response()->json($newsletter, 200);
+        return response()->json($newsletterRepositry->getResults(), 200);
     }
 
     /**

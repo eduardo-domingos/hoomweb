@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use \App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -27,33 +28,24 @@ class UserController extends Controller
     public function index(Request $request)
     {
 
-        $users = [];
+        $userRepository = new UserRepository(($this->user));
 
         if($request->has('attributes_newsletter')){
-            $attributes_newsletter = $request->query('attributes_newsletter');
-            $users = $this->user->with('newsletter:id_user,'.$attributes_newsletter);
+            $attributes_newsletter = 'newsletter:id_user,'.$request->query('attributes_newsletter');
+            $userRepository->selectAttributesRelatedRecords($attributes_newsletter);
         }else{
-            $users = $this->user->with('newsletter');
+            $userRepository->selectAttributesRelatedRecords('newsletter');
         }
 
         if($request->has('filter')){
-            $filters = explode(';', $request->query('filter'));
-
-            foreach($filters as $key => $conditions){
-                $condition = explode(':', $conditions);                
-                $users = $users->where($condition[0], $condition[1], $condition[2]);
-            }
-
+            $userRepository->filter($request->query('filter'));
         }
 
         if($request->has('attributes')){
-            $attributes = $request->query('attributes');
-            $users = $users->selectRaw($attributes)->get();
-        }else{
-            $users = $users->get();
+            $userRepository->selectAttributes($request->query('attributes'));
         }
 
-        return response()->json($users, 200);
+        return response()->json($userRepository->getResults(), 200);
     }
 
     /**
