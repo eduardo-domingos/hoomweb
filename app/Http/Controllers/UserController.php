@@ -37,8 +37,13 @@ class UserController extends Controller
         }
 
         if($request->has('filter')){
-            $conditions = explode(':', $request->query('filter'));
-            $users = $users->where($conditions[0], $conditions[1], $conditions[2]);
+            $filters = explode(';', $request->query('filter'));
+
+            foreach($filters as $key => $conditions){
+                $condition = explode(':', $conditions);                
+                $users = $users->where($condition[0], $condition[1], $condition[2]);
+            }
+
         }
 
         if($request->has('attributes')){
