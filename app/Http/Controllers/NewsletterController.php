@@ -23,9 +23,33 @@ class NewsletterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $newsletter = $this->newsletter->all();
+        $newsletter = [];
+
+        if($request->has('attributes_user')){
+            $attributes_newsletter = $request->query('attributes_user');
+            $newsletter = $this->newsletter->with('user:id,'.$attributes_newsletter);
+        }else{
+            $newsletter = $this->newsletter->with('user');
+        }
+
+        if($request->has('filter')){
+            $filters = explode(';', $request->query('filter'));
+
+            foreach($filters as $key => $conditions){
+                $condition = explode(':', $conditions);                
+                $newsletter = $newsletter->where($condition[0], $condition[1], $condition[2]);
+            }
+
+        }
+
+        if($request->has('attributes')){
+            $attributes = $request->query('attributes');
+            $newsletter = $newsletter->selectRaw($attributes)->get();
+        }else{
+            $newsletter = $newsletter->get();
+        }
 
         return response()->json($newsletter, 200);
     }
