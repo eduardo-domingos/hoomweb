@@ -14,8 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('v1')->middleware('jwt.auth')->group(function(){
-    Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);
+Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);
+Route::get('/newsletter', [App\Http\Controllers\NewsletterController::class, 'index']);
+Route::get('/newsletter/{id}', [App\Http\Controllers\NewsletterController::class, 'show']);
+
+Route::middleware('jwt.auth')->group(function(){
     Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout']);
     Route::post('/refresh', [App\Http\Controllers\AuthController::class, 'refresh']);
     Route::post('/me', [App\Http\Controllers\AuthController::class, 'me']);
@@ -30,11 +33,6 @@ Route::prefix('v1')->middleware('jwt.auth')->group(function(){
     Route::post('/newsletter', [App\Http\Controllers\NewsletterController::class, 'store']);
     Route::put('/newsletter/{id}', [App\Http\Controllers\NewsletterController::class, 'update']);
     Route::delete('/newsletter/{id}', [App\Http\Controllers\NewsletterController::class, 'destroy']);
-});
-
-Route::prefix('v1')->group(function(){
-    Route::get('/newsletter', [App\Http\Controllers\NewsletterController::class, 'index']);
-    Route::get('/newsletter/{id}', [App\Http\Controllers\NewsletterController::class, 'show']);
 });
 
 /*
