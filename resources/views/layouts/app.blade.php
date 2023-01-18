@@ -30,7 +30,14 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
-
+                        @Auth
+                            <li class="nav-item">
+                                <a class="nav-link" href="/users">Usuários</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/news">Notícias</a>
+                            </li>
+                        @endAuth
                     </ul>
 
                     <!-- Right Side Of Navbar -->
